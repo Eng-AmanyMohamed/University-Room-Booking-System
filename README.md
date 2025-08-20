@@ -189,8 +189,24 @@ logging:
 | Cancellation allowed only before start time      | Service validation|
 | Cannot delete room with future approved bookings | Repository check → 409 CONFLICT  |
 | Every status change →BookingHistoryentry         | Service layer logging  |
----
 
+---
+## 🌐 Sample API Endpoints
+
+All secured endpoints require a valid JWT in the header:  
+`Authorization: Bearer <your-jwt-token>`
+- POST `/api/users/register`Register a new user (ِAdmin,Student,FacultyMember).
+- POST `/api/auth/login`Authenticate user, return JWT
+- GET `/api/rooms/available` Get available time slots for a room/date
+- POST `/api/bookings` Request a new booking (PENDING)
+- PATCH `/api/admin/bookings/{id}/approve` Approve booking
+- PATCH `/api/admin/bookings/{id}/reject` 	Reject booking with reason
+- GET `/api/admin/bookings` List all bookings (filterable)
+- DELETE `/api/bookings/{id}` Cancel own booking
+- POST `/api/admin/rooms` Add new room
+- POST `api/holidays` Add new holiday
+- GET `api/holidays` Get all holidays
+---
 ## 🧹 Global Exception Handling
 - Returns structured JSON errors:
 ```
