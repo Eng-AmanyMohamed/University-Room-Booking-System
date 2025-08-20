@@ -15,9 +15,14 @@ import java.time.LocalDateTime;
 public class Holiday {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long holiday_id;
-    private LocalDateTime start_date;
-    private LocalDateTime end_date;
+    private Long holidayId;
+
+    @Column(name = "start_date")
+    private LocalDateTime startDate;
+
+    @Column(name = "end_date")
+    private LocalDateTime endDate;
+    
     private String description;
 
 }
