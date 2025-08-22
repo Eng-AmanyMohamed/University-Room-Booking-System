@@ -1,5 +1,6 @@
 package com.sprints.UniversityRoomBookingSystem.dto.request;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.sprints.UniversityRoomBookingSystem.validation.NoOverlap;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
@@ -14,7 +15,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-//@NoOverlap   you should IMPLEMENT this custom annotation to prevent overlapping bookings
+@NoOverlap
 public class BookingCreateDTO {
     @NotBlank(message = "Purpose is required")
     private String purpose;
