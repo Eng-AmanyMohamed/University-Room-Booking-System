@@ -15,12 +15,6 @@ import java.time.Instant;
 public class BookingHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-<<<<<<< Updated upstream
-    @Column(name="history_id")
-    private Long historyId;
-    private String action;   // CREATED, APPROVED, REJECTED, CANCELLED
-    private LocalDateTime timestamp;
-=======
     private Long history_id;
 
     @Enumerated(EnumType.STRING)
@@ -39,7 +33,6 @@ public class BookingHistory {
 
     @Column(length = 1000)
     private String reason;
->>>>>>> Stashed changes
 
     @ManyToOne
     @JoinColumn(name = "booking_id", nullable = false)
