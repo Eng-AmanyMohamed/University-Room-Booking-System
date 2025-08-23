@@ -49,7 +49,7 @@ public class BookingHistoryServiceImpl implements BookingHistoryService {
 
     @Override
     public List<BookingHistoryResponseDTO> getHistoryForBooking(Long bookingId) {
-        return historyRepository.findByBookingIdOrderByChangedAtDesc(bookingId)
+        return historyRepository.findByBookingBookingIdOrderByChangedAtDesc(bookingId)
                 .stream()
                 .map(historyMapper::toDto)
                 .toList();

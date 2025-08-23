@@ -7,5 +7,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public interface BookingHistoryRepository extends JpaRepository<BookingHistory,Long> {
-    List<BookingHistory> findByBookingIdOrderByChangedAtDesc(Long id);
+    List<BookingHistory> findByBookingBookingIdOrderByChangedAtDesc(Long bookingId);
+
 }
