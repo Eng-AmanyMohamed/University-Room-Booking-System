@@ -20,5 +20,5 @@ public class RoomCreateDTO {
     @NotNull(message = "Capacity is required")
     private Integer capacity;
     private Long buildingId;              // Reference to Building
-    private List<Long> featureIds;
+    private List<String> featureNames;
 }
