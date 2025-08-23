@@ -13,5 +13,6 @@ import java.util.List;
 public class RoomFeatureResponseDTO {
     private Long feature_id;
     private String featureName;
+    private String featureDescription;
     private List<Long> roomIds;
 }

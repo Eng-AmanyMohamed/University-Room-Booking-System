@@ -11,5 +11,5 @@ import java.util.List;
 @AllArgsConstructor
 public class RoomFeatureCreateDTO {
     private String featureName;
-    private List<Long> roomIds;  // just IDs when creating/updating
+    private String featureDescription;
 }
