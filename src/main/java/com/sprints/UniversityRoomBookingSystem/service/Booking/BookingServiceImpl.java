@@ -3,10 +3,8 @@ package com.sprints.UniversityRoomBookingSystem.service.Booking;
 import com.sprints.UniversityRoomBookingSystem.Exception.EntityNotFoundException;
 import com.sprints.UniversityRoomBookingSystem.dto.request.BookingCreateDTO;
 import com.sprints.UniversityRoomBookingSystem.dto.response.BookingResponseDTO;
-import com.sprints.UniversityRoomBookingSystem.model.Booking;
-import com.sprints.UniversityRoomBookingSystem.model.BookingStatus;
-import com.sprints.UniversityRoomBookingSystem.model.Room;
-import com.sprints.UniversityRoomBookingSystem.model.User;
+import com.sprints.UniversityRoomBookingSystem.model.*;
+import com.sprints.UniversityRoomBookingSystem.repository.BookingHistoryRepository;
 import com.sprints.UniversityRoomBookingSystem.repository.BookingRepository;
 import com.sprints.UniversityRoomBookingSystem.repository.RoomRepository;
 import com.sprints.UniversityRoomBookingSystem.repository.UserRepository;
@@ -26,6 +24,9 @@ public class BookingServiceImpl implements BookingService {
     private RoomRepository roomRepository; // Inject RoomRepository
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private BookingHistoryRepository bookingHistoryRepository;
     @Override
     @Transactional
     public BookingResponseDTO createBooking(BookingCreateDTO bookingCreateDTO) {
@@ -35,6 +36,7 @@ public class BookingServiceImpl implements BookingService {
         booking.setStartTime(bookingCreateDTO.getStart_time());
         booking.setEndTime(bookingCreateDTO.getEnd_time());
         booking.setStatus(BookingStatus.PENDING);
+
 
         // Fetch Room entity by ID
 
@@ -56,6 +58,9 @@ public class BookingServiceImpl implements BookingService {
         responseDTO.setStart_time(savedBooking.getStartTime());
         responseDTO.setEnd_time(savedBooking.getEndTime());
         responseDTO.setStatus(savedBooking.getStatus());
+
+        saveHistory(savedBooking, null, BookingStatus.PENDING, BookingAction.CREATE, user, "New booking requested");
+
 
         return responseDTO;
     }
@@ -82,6 +87,9 @@ public class BookingServiceImpl implements BookingService {
             throw new RuntimeException("Booking cannot be updated as it is already cancelled.");
         }
 
+
+        BookingStatus oldStatus = booking.getStatus();
+
         // Update booking details
         booking.setPurpose(bookingUpdateDTO.getPurpose());
         booking.setStartTime(bookingUpdateDTO.getStart_time());
@@ -102,6 +110,8 @@ public class BookingServiceImpl implements BookingService {
 
         Booking updatedBooking = bookingRepository.save(booking);
 
+        saveHistory(updatedBooking, oldStatus, updatedBooking.getStatus(), BookingAction.UPDATE, updatedBooking.getUser(), "Booking updated");
+
         // Convert to response DTO
         BookingResponseDTO responseDTO = new BookingResponseDTO();
         responseDTO.setBooking_id(updatedBooking.getBookingId());
@@ -109,6 +119,7 @@ public class BookingServiceImpl implements BookingService {
         responseDTO.setStart_time(updatedBooking.getStartTime());
         responseDTO.setEnd_time(updatedBooking.getEndTime());
         responseDTO.setStatus(updatedBooking.getStatus());
+
 
 
         return responseDTO;
@@ -123,8 +134,24 @@ public class BookingServiceImpl implements BookingService {
         if (booking.getStatus() != BookingStatus.PENDING && booking.getStatus() != BookingStatus.APPROVED) {
             throw new EntityNotFoundException("Booking cannot be canceled as it is in status: " + booking.getStatus());
         }
+        BookingStatus oldStatus = booking.getStatus();
         booking.setStatus(BookingStatus.CANCELLED);
         bookingRepository.save(booking);
+        saveHistory(booking, oldStatus, BookingStatus.CANCELLED, BookingAction.CANCEL, booking.getUser(), "Booking cancelled by user");
+    }
+
+    private void saveHistory(Booking booking, BookingStatus oldStatus, BookingStatus newStatus, BookingAction action, User changedBy,String reason){
+        BookingHistory history=new BookingHistory();
+        history.setBooking(booking);
+        history.setPreviousStatus(oldStatus);
+        history.setNewStatus(newStatus);
+        history.setAction(action);
+        history.setChangedBy(changedBy);
+        history.setReason(reason);
+        history.setChangedAt(java.time.Instant.now());
+        bookingHistoryRepository.save(history);
+
+
     }
 
 }

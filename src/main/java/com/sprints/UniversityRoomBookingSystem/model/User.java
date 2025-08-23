@@ -43,7 +43,7 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     List<Booking> bookingList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "changedBy")
     List<BookingHistory> bookingHistoryList = new ArrayList<>();
 
     @Override
