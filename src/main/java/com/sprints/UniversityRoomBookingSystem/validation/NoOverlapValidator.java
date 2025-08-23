@@ -46,7 +46,7 @@ public class NoOverlapValidator implements ConstraintValidator<NoOverlap, Bookin
             for (int i = 0; i < overlappingBookings.size(); i++) {
                 Booking booking = overlappingBookings.get(i);
                 errorMessage.append(String.format("ID %d (%s to %s)",
-                        booking.getBooking_id(),
+                        booking.getBookingId(),
                         booking.getStart_time().toString(),
                         booking.getEnd_time().toString()));
                 if (i < overlappingBookings.size() - 1) {

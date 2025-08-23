@@ -17,7 +17,8 @@ import java.util.List;
 public class Department {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long depart_id;
+    @Column(name="depart_id")
+    private Long departId;
     private String name;
 
     @OneToMany(mappedBy = "department")

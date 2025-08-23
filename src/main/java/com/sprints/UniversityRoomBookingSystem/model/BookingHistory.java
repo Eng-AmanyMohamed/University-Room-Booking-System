@@ -15,7 +15,8 @@ import java.time.LocalDateTime;
 public class BookingHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long history_id;
+    @Column(name="history_id")
+    private Long historyId;
     private String action;   // CREATED, APPROVED, REJECTED, CANCELLED
     private LocalDateTime timestamp;
 

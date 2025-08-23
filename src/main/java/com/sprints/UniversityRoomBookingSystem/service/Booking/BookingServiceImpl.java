@@ -51,7 +51,7 @@ public class BookingServiceImpl implements BookingService {
 
         // Convert to response DTO
         BookingResponseDTO responseDTO = new BookingResponseDTO();
-        responseDTO.setBooking_id(savedBooking.getBooking_id());
+        responseDTO.setBooking_id(savedBooking.getBookingId());
         responseDTO.setPurpose(savedBooking.getPurpose());
         responseDTO.setStart_time(savedBooking.getStart_time());
         responseDTO.setEnd_time(savedBooking.getEnd_time());
@@ -89,7 +89,7 @@ public class BookingServiceImpl implements BookingService {
 
 
         List<Booking> overlappingBookings = bookingRepository.findOverlappingBookingsExcluding(
-                booking.getRoom().getRoom_id(),
+                booking.getRoom().getRoomId(),
                 bookingUpdateDTO.getStart_time(),
                 bookingUpdateDTO.getEnd_time(),
                 bookingId
@@ -104,7 +104,7 @@ public class BookingServiceImpl implements BookingService {
 
         // Convert to response DTO
         BookingResponseDTO responseDTO = new BookingResponseDTO();
-        responseDTO.setBooking_id(updatedBooking.getBooking_id());
+        responseDTO.setBooking_id(updatedBooking.getBookingId());
         responseDTO.setPurpose(updatedBooking.getPurpose());
         responseDTO.setStart_time(updatedBooking.getStart_time());
         responseDTO.setEnd_time(updatedBooking.getEnd_time());

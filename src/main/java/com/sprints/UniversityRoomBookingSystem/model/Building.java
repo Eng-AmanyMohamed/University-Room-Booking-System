@@ -16,7 +16,8 @@ import java.util.List;
 public class Building {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long building_id;
+    @Column(name="building_id")
+    private Long buildingId;
     private String building_name;
     private String location;
 

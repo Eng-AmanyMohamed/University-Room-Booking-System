@@ -17,8 +17,10 @@ import java.util.List;
 public class RoomFeature {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long feature_id;
-    private String feature_name;
+    @Column(name="feature_id")
+    private Long featureId;
+    private String featureName;
+    private String featureDescription;
     @ManyToMany
     @JoinTable(
             name = "room_features",

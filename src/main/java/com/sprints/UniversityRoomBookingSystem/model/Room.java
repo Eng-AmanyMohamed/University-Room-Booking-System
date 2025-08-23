@@ -16,7 +16,8 @@ import java.util.List;
 public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long room_id;
+    @Column(name="room_id")
+    private Long roomId;
     private String name;
     private Integer capacity;
     @OneToMany(mappedBy = "room")

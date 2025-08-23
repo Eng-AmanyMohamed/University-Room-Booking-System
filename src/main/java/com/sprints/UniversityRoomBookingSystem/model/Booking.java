@@ -18,7 +18,8 @@ import java.util.List;
 public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long booking_id;
+    @Column(name="booking_id")
+    private Long bookingId;
     private String purpose;
     private LocalDateTime start_time;
     private LocalDateTime end_time;
