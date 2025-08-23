@@ -41,8 +41,8 @@ public class RoomService implements IRoomService {
         List<String> roomFeaturesNames = roomDto.getFeatureNames();
         List<RoomFeature> roomFeatures = new ArrayList<>();
         for (String roomFeatureName : roomFeaturesNames) {
-            if(roomFeatureRepository.existsByfeatureNameIgnoreCase(roomFeatureName)){
-                RoomFeature roomFeature = roomFeatureRepository.findByfeatureNameIgnoreCase(roomFeatureName);
+            if(roomFeatureRepository.existsByFeatureNameIgnoreCase(roomFeatureName)){
+                RoomFeature roomFeature = roomFeatureRepository.findByFeatureNameIgnoreCase(roomFeatureName);
                 roomFeatures.add(roomFeature);
             }else{
                 throw new RuntimeException("Room Feature Not Found"); //Custom Exception
@@ -93,8 +93,8 @@ public class RoomService implements IRoomService {
         List<String> roomFeaturesNames = roomDto.getFeatureNames();
         List<RoomFeature> roomFeatures = new ArrayList<>();
         for (String roomFeatureName : roomFeaturesNames) {
-            if(roomFeatureRepository.existsByfeatureNameIgnoreCase(roomFeatureName)){
-                RoomFeature roomFeature = roomFeatureRepository.findByfeatureNameIgnoreCase(roomFeatureName);
+            if(roomFeatureRepository.existsByFeatureNameIgnoreCase(roomFeatureName)){
+                RoomFeature roomFeature = roomFeatureRepository.findByFeatureNameIgnoreCase(roomFeatureName);
                 roomFeatures.add(roomFeature);
             }else{
                 throw new RuntimeException("Room Feature Not Found"); //Custom Exception
@@ -116,7 +116,7 @@ public class RoomService implements IRoomService {
         Room room = roomRepository.findById(id).orElseThrow(() -> new RuntimeException("Room not Found"));
         List<Booking> bookings = room.getBookingList();
         for (Booking booking : bookings) {
-            if (booking.getStatus() == BookingStatus.APPROVED && booking.getEnd_time().isAfter(LocalDateTime.now())) {
+            if (booking.getStatus() == BookingStatus.APPROVED && booking.getEndTime().isAfter(LocalDateTime.now())) {
                 throw new RuntimeException("Booking has already been approved"); //replace with custom exception
             }
         } roomRepository.delete(room);

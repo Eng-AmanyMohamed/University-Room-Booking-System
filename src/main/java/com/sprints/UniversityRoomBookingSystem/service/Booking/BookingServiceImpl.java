@@ -32,8 +32,8 @@ public class BookingServiceImpl implements BookingService {
         // Create a new Booking entity from the DTO
         Booking booking = new Booking();
         booking.setPurpose(bookingCreateDTO.getPurpose());
-        booking.setStart_time(bookingCreateDTO.getStart_time());
-        booking.setEnd_time(bookingCreateDTO.getEnd_time());
+        booking.setStartTime(bookingCreateDTO.getStart_time());
+        booking.setEndTime(bookingCreateDTO.getEnd_time());
         booking.setStatus(BookingStatus.PENDING);
 
         // Fetch Room entity by ID
@@ -53,8 +53,8 @@ public class BookingServiceImpl implements BookingService {
         BookingResponseDTO responseDTO = new BookingResponseDTO();
         responseDTO.setBooking_id(savedBooking.getBookingId());
         responseDTO.setPurpose(savedBooking.getPurpose());
-        responseDTO.setStart_time(savedBooking.getStart_time());
-        responseDTO.setEnd_time(savedBooking.getEnd_time());
+        responseDTO.setStart_time(savedBooking.getStartTime());
+        responseDTO.setEnd_time(savedBooking.getEndTime());
         responseDTO.setStatus(savedBooking.getStatus());
 
         return responseDTO;
@@ -84,8 +84,8 @@ public class BookingServiceImpl implements BookingService {
 
         // Update booking details
         booking.setPurpose(bookingUpdateDTO.getPurpose());
-        booking.setStart_time(bookingUpdateDTO.getStart_time());
-        booking.setEnd_time(bookingUpdateDTO.getEnd_time());
+        booking.setStartTime(bookingUpdateDTO.getStart_time());
+        booking.setEndTime(bookingUpdateDTO.getEnd_time());
 
 
         List<Booking> overlappingBookings = bookingRepository.findOverlappingBookingsExcluding(
@@ -106,8 +106,8 @@ public class BookingServiceImpl implements BookingService {
         BookingResponseDTO responseDTO = new BookingResponseDTO();
         responseDTO.setBooking_id(updatedBooking.getBookingId());
         responseDTO.setPurpose(updatedBooking.getPurpose());
-        responseDTO.setStart_time(updatedBooking.getStart_time());
-        responseDTO.setEnd_time(updatedBooking.getEnd_time());
+        responseDTO.setStart_time(updatedBooking.getStartTime());
+        responseDTO.setEnd_time(updatedBooking.getEndTime());
         responseDTO.setStatus(updatedBooking.getStatus());
 
 

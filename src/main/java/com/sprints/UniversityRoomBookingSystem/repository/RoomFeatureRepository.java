@@ -7,8 +7,8 @@ import java.util.Optional;
 
 
 public interface RoomFeatureRepository extends JpaRepository<RoomFeature, Long> {
-   boolean existsByfeatureNameIgnoreCase(String featureName);
-   RoomFeature findByfeatureNameIgnoreCase(String featureName);
+   boolean existsByFeatureNameIgnoreCase(String featureName);
+   RoomFeature findByFeatureNameIgnoreCase(String featureName);
 
 
 

@@ -21,8 +21,8 @@ public class Booking {
     @Column(name="booking_id")
     private Long bookingId;
     private String purpose;
-    private LocalDateTime start_time;
-    private LocalDateTime end_time;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
     @Enumerated(EnumType.STRING)
     private BookingStatus status;
 

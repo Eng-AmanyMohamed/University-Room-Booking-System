@@ -23,7 +23,7 @@ public class RoomFeatureService implements IRoomFeatureService {
 
     @Override
     public RoomFeatureResponseDTO createRoomFeature(RoomFeatureCreateDTO featureDto) {
-        if(roomFeatureRepository.existsByfeatureNameIgnoreCase(featureDto.getFeatureName())){
+        if(roomFeatureRepository.existsByFeatureNameIgnoreCase(featureDto.getFeatureName())){
             throw new RuntimeException("Room Feature already exists");
         }
         RoomFeature roomFeature = new RoomFeature();

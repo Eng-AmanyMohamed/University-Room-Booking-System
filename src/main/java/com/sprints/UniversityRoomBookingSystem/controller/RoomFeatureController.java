@@ -3,6 +3,7 @@ package com.sprints.UniversityRoomBookingSystem.controller;
 import com.sprints.UniversityRoomBookingSystem.dto.request.RoomFeatureCreateDTO;
 import com.sprints.UniversityRoomBookingSystem.dto.response.RoomFeatureResponseDTO;
 import com.sprints.UniversityRoomBookingSystem.service.RoomFeature.RoomFeatureService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ public class RoomFeatureController {
     private RoomFeatureService roomFeatureService;
 
     @PostMapping("/add")
-    public ResponseEntity<RoomFeatureResponseDTO> addFeature(RoomFeatureCreateDTO roomFeatureCreateDTO) {
+    public ResponseEntity<RoomFeatureResponseDTO> addfeature(@Valid @RequestBody RoomFeatureCreateDTO roomFeatureCreateDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(roomFeatureService.createRoomFeature(roomFeatureCreateDTO));
     }
     @GetMapping("/all")
@@ -30,7 +31,7 @@ public class RoomFeatureController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<RoomFeatureResponseDTO> deletefeature(@PathVariable long id) {
+    public ResponseEntity<Void> deletefeature(@PathVariable long id) {
         roomFeatureService.deleteRoomFeature(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

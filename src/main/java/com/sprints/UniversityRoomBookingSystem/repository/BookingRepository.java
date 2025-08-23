@@ -23,7 +23,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     @Query("SELECT b FROM Booking b WHERE b.room.roomId = :roomId " +
             "AND b.status IN ('PENDING', 'APPROVED') " +
-            "AND ((b.start_time < :endTime) AND (b.end_time > :startTime))")
+            "AND ((b.startTime < :endTime) AND (b.endTime > :startTime))")
     List<Booking> findOverlappingBookings(@Param("roomId") Long roomId,
                                           @Param("startTime") LocalDateTime startTime,
                                           @Param("endTime") LocalDateTime endTime);
@@ -31,7 +31,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query("SELECT b FROM Booking b WHERE b.room.roomId = :roomId " +
             "AND b.bookingId != :bookingId " +
             "AND b.status IN ('PENDING', 'APPROVED') " +
-            "AND ((b.start_time < :endTime) AND (b.end_time > :startTime))")
+            "AND ((b.startTime < :endTime) AND (b.endTime > :startTime))")
     List<Booking> findOverlappingBookingsExcluding(@Param("roomId") Long roomId,
                                                    @Param("startTime") LocalDateTime startTime,
                                                    @Param("endTime") LocalDateTime endTime,
@@ -39,28 +39,28 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     @Query("SELECT b FROM Booking b WHERE b.room.roomId = :roomId " +
             "AND b.status IN ('PENDING', 'APPROVED') " +
-            "AND b.start_time >= :startDate AND b.end_time <= :endDate " +
-            "ORDER BY b.start_time")
+            "AND b.startTime >= :startDate AND b.endTime <= :endDate " +
+            "ORDER BY b.startTime")
     List<Booking> findBookingsInDateRange(@Param("roomId") Long roomId,
                                           @Param("startDate") LocalDateTime startDate,
                                           @Param("endDate") LocalDateTime endDate);
 
     @Query("SELECT b FROM Booking b WHERE b.user.userId = :userId " +
             "AND b.status IN ('PENDING', 'APPROVED') " +
-            "AND b.start_time > :currentTime")
+            "AND b.startTime > :currentTime")
     List<Booking> findCancellableBookingsByUser(@Param("userId") Long userId,
                                                 @Param("currentTime") LocalDateTime currentTime);
 
     @Query("SELECT b FROM Booking b WHERE b.room.roomId = :roomId " +
             "AND b.status = 'APPROVED' " +
-            "AND b.start_time > :currentTime")
+            "AND b.startTime > :currentTime")
     List<Booking> findFutureApprovedBookingsForRoom(@Param("roomId") Long roomId,
                                                     @Param("currentTime") LocalDateTime currentTime);
 
     @Modifying
     @Query("UPDATE Booking b SET b.status = 'CANCELLED' WHERE b.bookingId = :bookingId " +
             "AND b.status IN ('PENDING', 'APPROVED') " +
-            "AND b.start_time > :currentTime")
+            "AND b.startTime > :currentTime")
     int cancelBooking(@Param("bookingId") Long bookingId,
                       @Param("currentTime") LocalDateTime currentTime);
 
@@ -69,11 +69,11 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     int updateBookingStatus(@Param("bookingId") Long bookingId,
                             @Param("status") BookingStatus status);
 
-    @Query("SELECT b FROM Booking b WHERE b.status = 'PENDING' ORDER BY b.start_time")
+    @Query("SELECT b FROM Booking b WHERE b.status = 'PENDING' ORDER BY b.startTime")
     List<Booking> findPendingBookings();
 
     @Query("SELECT COUNT(b) FROM Booking b WHERE b.user.userId = :userId " +
-            "AND b.start_time >= :startPeriod AND b.start_time <= :endPeriod")
+            "AND b.startTime >= :startPeriod AND b.startTime <= :endPeriod")
     Long countUserBookingsInPeriod(@Param("userId") Long userId,
                                    @Param("startPeriod") LocalDateTime startPeriod,
                                    @Param("endPeriod") LocalDateTime endPeriod);
