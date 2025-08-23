@@ -11,9 +11,4 @@ import lombok.NoArgsConstructor;
 public class DepartmentCreateDTO {
     @NotBlank(message = "Department name is required")
     private String name;
-
-    @NotBlank(message = "Department code is required")
-    private String code;
-
-    private String description;
 }

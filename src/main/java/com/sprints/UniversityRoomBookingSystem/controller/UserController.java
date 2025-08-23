@@ -19,12 +19,6 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
-    @PostMapping("/register")
-    public ResponseEntity<UserResponseDTO> registerUser(@Valid @RequestBody UserRegisterDTO dto) {
-        UserResponseDTO createdUser = userService.registerUser(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
-    }
-
     @GetMapping
     @PreAuthorize("hasRole('Admin')")
     public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
@@ -44,5 +38,15 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('Admin')")
+    public ResponseEntity<UserResponseDTO> updateUser(
+            @PathVariable Long id,
+            @Valid @RequestBody UserRegisterDTO userRegisterDTO) {
+
+        UserResponseDTO updatedUser = userService.updateUser(id, userRegisterDTO);
+        return ResponseEntity.ok(updatedUser);
     }
 }

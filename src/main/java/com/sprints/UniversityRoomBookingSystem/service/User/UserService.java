@@ -9,10 +9,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
-    UserResponseDTO registerUser(UserRegisterDTO userRegisterDTO);
+    //UserResponseDTO registerUser(UserRegisterDTO userRegisterDTO);
     Optional<User> getUserById(Long id);
     Optional<User> getUserByEmail(String email);
     List<UserResponseDTO> getAllUsers();
     void deleteUser(Long id);
+    UserResponseDTO updateUser(Long id, UserRegisterDTO userRegisterDTO);
 
 }

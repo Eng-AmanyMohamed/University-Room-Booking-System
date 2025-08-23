@@ -33,39 +33,39 @@ public class UserServiceImpl implements UserService {
         this.roleRepository = roleRepository;
     }
 
-    @Override
-    public UserResponseDTO registerUser(UserRegisterDTO dto) {
-        if (userRepository.existsByEmail(dto.getEmail())) {
-            //throw new DuplicateException("User with this email already exists");
-        }
-
-        User user = new User();
-        user.setUsername(dto.getUsername());
-        user.setEmail(dto.getEmail());
-        user.setPassword(passwordEncoder.encode(dto.getPassword())); // 🔒 hash
-        Optional< Department> department = departmentRepository.findById( dto.getDepartmentId());
-        if(department.isPresent()) {
-            user.setDepartment(department.get());
-        }else{
-            throw new EntityNotFoundException("Department not found");
-        }
-       Optional<Role> role = roleRepository.findById( dto.getRoleId());
-        if(role.isPresent()) {
-            user.setRole(role.get());
-        }else{
-            throw new EntityNotFoundException("Role not found");
-        }
-
-        User savedUser = userRepository.save(user);
-
-        return new UserResponseDTO(
-                savedUser.getUserId(),
-                savedUser.getUsername(),
-                savedUser.getEmail(),
-                savedUser.getRole().getName(),
-                savedUser.getDepartment().getName()
-        );
-    }
+//    @Override
+//    public UserResponseDTO registerUser(UserRegisterDTO dto) {
+//        if (userRepository.existsByEmail(dto.getEmail())) {
+//            //throw new DuplicateException("User with this email already exists");
+//        }
+//
+//        User user = new User();
+//        user.setUsername(dto.getUsername());
+//        user.setEmail(dto.getEmail());
+//        user.setPassword(passwordEncoder.encode(dto.getPassword())); // 🔒 hash
+//        Optional< Department> department = departmentRepository.findById( dto.getDepartmentId());
+//        if(department.isPresent()) {
+//            user.setDepartment(department.get());
+//        }else{
+//            throw new EntityNotFoundException("Department not found");
+//        }
+//       Optional<Role> role = roleRepository.findById( dto.getRoleId());
+//        if(role.isPresent()) {
+//            user.setRole(role.get());
+//        }else{
+//            throw new EntityNotFoundException("Role not found");
+//        }
+//
+//        User savedUser = userRepository.save(user);
+//
+//        return new UserResponseDTO(
+//                savedUser.getUserId(),
+//                savedUser.getUsername(),
+//                savedUser.getEmail(),
+//                savedUser.getRole().getName(),
+//                savedUser.getDepartment().getName()
+//        );
+//    }
 
 
     @Override
@@ -98,5 +98,39 @@ public class UserServiceImpl implements UserService {
             throw new EntityNotFoundException("User not found with id: " + id);
         }
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public UserResponseDTO updateUser(Long id, UserRegisterDTO userRegisterDTO){
+        User user  = userRepository.findById(id).
+                orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("User not found with id: " + id));
+
+
+        user.setUsername(userRegisterDTO.getUsername());
+        user.setEmail(userRegisterDTO.getEmail());
+        user.setPassword(passwordEncoder.encode(userRegisterDTO.getPassword()));
+
+        Optional< Department> department = departmentRepository.findById( userRegisterDTO.getDepartmentId());
+        if(department.isPresent()) {
+            user.setDepartment(department.get());
+        }else{
+            throw new EntityNotFoundException("Department not found");
+        }
+
+        Optional<Role> role = roleRepository.findById( userRegisterDTO.getRoleId());
+        if(role.isPresent()) {
+            user.setRole(role.get());
+        }else{
+            throw new EntityNotFoundException("Role not found");
+        }
+        User savedUser = userRepository.save(user);
+
+        return new UserResponseDTO(
+                savedUser.getUserId(),
+                savedUser.getUsername(),
+                savedUser.getEmail(),
+                savedUser.getRole().getName(),
+                savedUser.getDepartment().getName()
+        );
     }
 }
