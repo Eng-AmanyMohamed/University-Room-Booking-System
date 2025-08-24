@@ -17,6 +17,7 @@ import org.mockito.MockitoAnnotations;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -175,4 +176,114 @@ class BookingServiceImplTest {
         assertEquals(BookingStatus.CANCELLED, booking.getStatus());
         verify(bookingHistoryRepository).save(any(BookingHistory.class));
     }
+    @Test
+    void findAvailableTimeSlots_ShouldReturnSingleSlot_WhenNoBookings() {
+        LocalDateTime start = LocalDateTime.of(2025, 1, 1, 10, 0);
+        LocalDateTime end = LocalDateTime.of(2025, 1, 1, 12, 0);
+
+        when(bookingRepository.findBookingsForAvailabilityCheck(1L, start, end))
+                .thenReturn(List.of()); // no bookings
+
+        List<Map<String, LocalDateTime>> result =
+                bookingService.findAvailableTimeSlots(1L, start, end);
+
+        assertEquals(1, result.size());
+        assertEquals(start, result.get(0).get("start"));
+        assertEquals(end, result.get(0).get("end"));
+    }
+
+    @Test
+    void findAvailableTimeSlots_ShouldReturnGapBeforeBooking() {
+        LocalDateTime start = LocalDateTime.of(2025, 1, 1, 8, 0);
+        LocalDateTime end = LocalDateTime.of(2025, 1, 1, 12, 0);
+
+        Booking booking = new Booking();
+        booking.setStartTime(LocalDateTime.of(2025, 1, 1, 9, 0));
+        booking.setEndTime(LocalDateTime.of(2025, 1, 1, 10, 0));
+
+        when(bookingRepository.findBookingsForAvailabilityCheck(1L, start, end))
+                .thenReturn(List.of(booking));
+
+        List<Map<String, LocalDateTime>> result =
+                bookingService.findAvailableTimeSlots(1L, start, end);
+
+        assertEquals(2, result.size());
+        assertEquals(start, result.get(0).get("start")); // slot before booking
+        assertEquals(booking.getStartTime(), result.get(0).get("end"));
+        assertEquals(booking.getEndTime(), result.get(1).get("start")); // slot after booking
+        assertEquals(end, result.get(1).get("end"));
+    }
+
+    @Test
+    void findAvailableTimeSlots_ShouldReturnGapBetweenTwoBookings() {
+        LocalDateTime start = LocalDateTime.of(2025, 1, 1, 8, 0);
+        LocalDateTime end = LocalDateTime.of(2025, 1, 1, 14, 0);
+
+        Booking booking1 = new Booking();
+        booking1.setStartTime(LocalDateTime.of(2025, 1, 1, 9, 0));
+        booking1.setEndTime(LocalDateTime.of(2025, 1, 1, 10, 0));
+
+        Booking booking2 = new Booking();
+        booking2.setStartTime(LocalDateTime.of(2025, 1, 1, 11, 0));
+        booking2.setEndTime(LocalDateTime.of(2025, 1, 1, 12, 0));
+
+        when(bookingRepository.findBookingsForAvailabilityCheck(1L, start, end))
+                .thenReturn(List.of(booking1, booking2));
+
+        List<Map<String, LocalDateTime>> result =
+                bookingService.findAvailableTimeSlots(1L, start, end);
+
+        assertEquals(3, result.size());
+        assertEquals(start, result.get(0).get("start")); // before booking1
+        assertEquals(booking1.getStartTime(), result.get(0).get("end"));
+        assertEquals(booking1.getEndTime(), result.get(1).get("start")); // between bookings
+        assertEquals(booking2.getStartTime(), result.get(1).get("end"));
+        assertEquals(booking2.getEndTime(), result.get(2).get("start")); // after booking2
+        assertEquals(end, result.get(2).get("end"));
+    }
+
+    @Test
+    void findAvailableTimeSlots_ShouldSkipOverlappingBookings() {
+        LocalDateTime start = LocalDateTime.of(2025, 1, 1, 8, 0);
+        LocalDateTime end = LocalDateTime.of(2025, 1, 1, 14, 0);
+
+        Booking booking1 = new Booking();
+        booking1.setStartTime(LocalDateTime.of(2025, 1, 1, 9, 0));
+        booking1.setEndTime(LocalDateTime.of(2025, 1, 1, 11, 0));
+
+        Booking booking2 = new Booking();
+        booking2.setStartTime(LocalDateTime.of(2025, 1, 1, 10, 30)); // overlaps booking1
+        booking2.setEndTime(LocalDateTime.of(2025, 1, 1, 12, 0));
+
+        when(bookingRepository.findBookingsForAvailabilityCheck(1L, start, end))
+                .thenReturn(List.of(booking1, booking2));
+
+        List<Map<String, LocalDateTime>> result =
+                bookingService.findAvailableTimeSlots(1L, start, end);
+
+        assertEquals(2, result.size());
+        assertEquals(start, result.get(0).get("start"));
+        assertEquals(booking1.getStartTime(), result.get(0).get("end"));
+        assertEquals(booking2.getEndTime(), result.get(1).get("start")); // after merged overlap
+        assertEquals(end, result.get(1).get("end"));
+    }
+
+    @Test
+    void findAvailableTimeSlots_ShouldReturnEmptyList_WhenBookingsCoverEntireRange() {
+        LocalDateTime start = LocalDateTime.of(2025, 1, 1, 8, 0);
+        LocalDateTime end = LocalDateTime.of(2025, 1, 1, 12, 0);
+
+        Booking booking = new Booking();
+        booking.setStartTime(start);
+        booking.setEndTime(end);
+
+        when(bookingRepository.findBookingsForAvailabilityCheck(1L, start, end))
+                .thenReturn(List.of(booking));
+
+        List<Map<String, LocalDateTime>> result =
+                bookingService.findAvailableTimeSlots(1L, start, end);
+
+        assertTrue(result.isEmpty());
+    }
+
 }
