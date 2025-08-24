@@ -80,5 +80,11 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "WHERE b.bookingId = :bookingId")
     Optional<Booking> findBookingWithDetails(@Param("bookingId") Long bookingId);
 
-
+    @Query("SELECT b FROM Booking b WHERE b.room.roomId = :roomId " +
+            "AND b.status IN (:PENDING , :APPROVED) " +
+            "AND ((b.startTime < :endTime) AND (b.endTime > :startTime)) " +
+            "ORDER BY b.startTime")
+    List<Booking> findBookingsForAvailabilityCheck(@Param("roomId") Long roomId,
+                                                   @Param("startTime") LocalDateTime startTime,
+                                                   @Param("endTime") LocalDateTime endTime);
 }
