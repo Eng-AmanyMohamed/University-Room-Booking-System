@@ -20,6 +20,7 @@ public class Building {
     private Long buildingId;
     private String building_name;
     private String location;
+    private Boolean isDeleted;
 
     @OneToMany(mappedBy = "building")
     List<Room> rooms = new ArrayList<>();

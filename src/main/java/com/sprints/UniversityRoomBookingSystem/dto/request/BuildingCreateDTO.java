@@ -15,6 +15,5 @@ public class BuildingCreateDTO {
 
     @NotBlank(message = "Location is required")
     private String location;
-    
-    private List<Long> roomIds;
+
 }

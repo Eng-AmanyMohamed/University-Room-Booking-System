@@ -1,6 +1,7 @@
 package com.sprints.UniversityRoomBookingSystem.controller;
 
-import com.sprints.UniversityRoomBookingSystem.model.Building;
+import com.sprints.UniversityRoomBookingSystem.dto.request.BuildingCreateDTO;
+import com.sprints.UniversityRoomBookingSystem.dto.response.BuildingResponseDTO;
 import com.sprints.UniversityRoomBookingSystem.service.Building.BuildingServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,36 +19,34 @@ public class BuildingController {
 
     // Create
     @PostMapping
-    public ResponseEntity<Building> createBuilding(@RequestBody Building building) {
-        return ResponseEntity.ok(buildingService.createBuilding(building));
+    public ResponseEntity<BuildingResponseDTO> createBuilding(@RequestBody BuildingCreateDTO buildingDto) {
+        return ResponseEntity.ok(buildingService.createBuilding(buildingDto));
     }
 
     // Read all
     @GetMapping
-    public ResponseEntity<List<Building>> getAllBuildings() {
+    public ResponseEntity<List<BuildingResponseDTO>> getAllBuildings() {
         return ResponseEntity.ok(buildingService.getAllBuildings());
     }
 
     // Read all active
-//    @GetMapping("/active")
-//    public ResponseEntity<List<Building>> getAllActiveBuildings() {
-//        return ResponseEntity.ok(buildingService.getAllActiveBuildings());
-//    }
+    @GetMapping("/active")
+    public ResponseEntity<List<BuildingResponseDTO>> getAllActiveBuildings() {
+        return ResponseEntity.ok(buildingService.getAllActiveBuildings());
+    }
 
     // Read by id
     @GetMapping("/{id}")
-    public ResponseEntity<Building> getBuildingById(@PathVariable Long id) {
-        return buildingService.getBuildingById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<BuildingResponseDTO> getBuildingById(@PathVariable Long id) {
+        return ResponseEntity.ok(buildingService.getBuildingById(id));
     }
 
     // Update
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('Admin')")
-    public ResponseEntity<Building> updateBuilding(@PathVariable Long id,
-                                                   @RequestBody Building building) {
-        return ResponseEntity.ok(buildingService.updateBuilding(id, building));
+    public ResponseEntity<BuildingResponseDTO> updateBuilding(@PathVariable Long id,
+                                                   @RequestBody BuildingCreateDTO buildingBto) {
+        return ResponseEntity.ok(buildingService.updateBuilding(id, buildingBto));
     }
 
     // Hard Delete
@@ -59,19 +58,19 @@ public class BuildingController {
     }
 
     // Soft Delete
-//    @PatchMapping("/{id}/soft-delete")
-//    @PreAuthorize("hasRole('Admin')")
-//    public ResponseEntity<Void> softDeleteBuilding(@PathVariable Long id) {
-//        buildingService.softDeleteBuilding(id);
-//        return ResponseEntity.noContent().build();
-//    }
+    @PatchMapping("/{id}/soft-delete")
+    @PreAuthorize("hasRole('Admin')")
+    public ResponseEntity<Void> softDeleteBuilding(@PathVariable Long id) {
+        buildingService.softDeleteBuilding(id);
+        return ResponseEntity.noContent().build();
+    }
 
     // Restore
-//    @PatchMapping("/{id}/restore")
-//    @PreAuthorize("hasRole('Admin')")
-//    public ResponseEntity<Void> restoreBuilding(@PathVariable Long id) {
-//        buildingService.restoreBuilding(id);
-//        return ResponseEntity.ok().build();
-//    }
+    @PatchMapping("/{id}/restore")
+    @PreAuthorize("hasRole('Admin')")
+    public ResponseEntity<Void> restoreBuilding(@PathVariable Long id) {
+        buildingService.restoreBuilding(id);
+        return ResponseEntity.ok().build();
+    }
 
 }

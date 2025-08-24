@@ -1,5 +1,7 @@
 package com.sprints.UniversityRoomBookingSystem.service.Building;
 
+import com.sprints.UniversityRoomBookingSystem.dto.request.BuildingCreateDTO;
+import com.sprints.UniversityRoomBookingSystem.dto.response.BuildingResponseDTO;
 import com.sprints.UniversityRoomBookingSystem.model.Building;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -9,18 +11,20 @@ import java.util.Optional;
 
 @Service
 public interface BuildingService {
-    Building createBuilding(Building building);
+    BuildingResponseDTO createBuilding(BuildingCreateDTO buildingDto);
 
-    List<Building> getAllBuildings();
+    List<BuildingResponseDTO> getAllBuildings();
 
-    Optional<Building> getBuildingById(Long id);
+    BuildingResponseDTO getBuildingById(Long id);
 
-    Building updateBuilding(Long id, Building updatedBuilding);
+    BuildingResponseDTO updateBuilding(Long id, BuildingCreateDTO updatedBuilding);
 
     void deleteBuilding(Long id);
 
-    //List<Building> getAllActiveBuildings();
-    // void softDeleteBuilding(Long id);
-    // void restoreBuilding(Long id);
+    List<BuildingResponseDTO> getAllActiveBuildings();
+
+    void softDeleteBuilding(Long id);
+
+    void restoreBuilding(Long id);
 
 }
