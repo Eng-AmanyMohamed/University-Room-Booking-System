@@ -1,5 +1,6 @@
 package com.sprints.UniversityRoomBookingSystem.service.Department;
 
+import com.sprints.UniversityRoomBookingSystem.Exception.DataNotFoundException;
 import com.sprints.UniversityRoomBookingSystem.dto.request.DepartmentCreateDTO;
 import com.sprints.UniversityRoomBookingSystem.dto.response.DepartmentResponseDTO;
 import com.sprints.UniversityRoomBookingSystem.model.Department;
@@ -30,7 +31,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     public DepartmentResponseDTO getDepartmentById(Long id) {
         Department department = departmentRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Department not found with id: " + id));
+                .orElseThrow(() -> new DataNotFoundException("Department not found with id: " + id));
         return mapToDTO(department);
     }
 
@@ -44,7 +45,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     public DepartmentResponseDTO updateDepartment(Long id, DepartmentCreateDTO dto) {
         Department department = departmentRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Department not found with id: " + id));
+                .orElseThrow(() -> new DataNotFoundException("Department not found with id: " + id));
 
         department.setName(dto.getName());
         // update code & description in entity if added
@@ -56,7 +57,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     public void deleteDepartment(Long id) {
         if (!departmentRepository.existsById(id)) {
-            throw new EntityNotFoundException("Department not found with id: " + id);
+            throw new DataNotFoundException("Department not found with id: " + id);
         }
         departmentRepository.deleteById(id);
     }

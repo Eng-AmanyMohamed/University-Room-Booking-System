@@ -1,5 +1,6 @@
 package com.sprints.UniversityRoomBookingSystem.service.Holiday;
 
+import com.sprints.UniversityRoomBookingSystem.Exception.DataNotFoundException;
 import com.sprints.UniversityRoomBookingSystem.dto.request.HolidayCreateDTO;
 import com.sprints.UniversityRoomBookingSystem.dto.response.HolidayResponseDTO;
 import com.sprints.UniversityRoomBookingSystem.model.Holiday;
@@ -43,13 +44,13 @@ public class HolidayService implements IHolidayService{
     public HolidayResponseDTO getHolidayById(Long id) {
         return holidayRepository.findById(id)
                 .map(holidayMapper::toResponseDTO)
-                .orElseThrow(()->new RuntimeException("Holiday not found with id " + id));
+                .orElseThrow(()->new DataNotFoundException("Holiday not found with id " + id));
     }
 
     @Override
     public HolidayResponseDTO updateHoliday(Long id, HolidayCreateDTO holidayCreateDTO) {
         Holiday holiday = holidayRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Holiday not found with id: " + id));
+                .orElseThrow(() -> new DataNotFoundException("Holiday not found with id: " + id));
 
         // Update fields
         holiday.setDescription(holidayCreateDTO.getDescription());
@@ -64,7 +65,7 @@ public class HolidayService implements IHolidayService{
     @Override
     public void deleteHoliday(Long id) {
         if (!holidayRepository.existsById(id)) {
-            throw new RuntimeException("Holiday not found with id " + id);
+            throw new DataNotFoundException("Holiday not found with id " + id);
         }
         holidayRepository.deleteById(id);
     }

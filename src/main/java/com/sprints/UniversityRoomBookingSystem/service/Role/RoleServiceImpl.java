@@ -1,5 +1,7 @@
 package com.sprints.UniversityRoomBookingSystem.service.Role;
 
+import com.sprints.UniversityRoomBookingSystem.Exception.DataNotFoundException;
+import com.sprints.UniversityRoomBookingSystem.Exception.DuplicateException;
 import com.sprints.UniversityRoomBookingSystem.model.Role;
 import com.sprints.UniversityRoomBookingSystem.repository.RoleRepository;
 import com.sprints.UniversityRoomBookingSystem.service.Role.RoleService;
@@ -19,7 +21,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public Role createRole(Role role) {
         if (roleRepository.existsByName(role.getName())) {
-            throw new RuntimeException("Role already exists!");
+            throw new DuplicateException("Role already exists!");
         }
         return roleRepository.save(role);
     }
@@ -32,13 +34,13 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public Role getRoleById(Long id) {
         return roleRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Role not found"));
+                .orElseThrow(() -> new DataNotFoundException("Role not found"));
     }
 
     @Override
     public void deleteRole(Long id) {
         Role role = roleRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Role not found"));
+                .orElseThrow(() -> new DataNotFoundException("Role not found"));
         roleRepository.delete(role);
     }
 }

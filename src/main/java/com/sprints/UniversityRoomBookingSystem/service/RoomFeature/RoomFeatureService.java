@@ -1,5 +1,7 @@
 package com.sprints.UniversityRoomBookingSystem.service.RoomFeature;
 
+import com.sprints.UniversityRoomBookingSystem.Exception.DataNotFoundException;
+import com.sprints.UniversityRoomBookingSystem.Exception.DuplicateException;
 import com.sprints.UniversityRoomBookingSystem.dto.request.RoomCreateDTO;
 import com.sprints.UniversityRoomBookingSystem.dto.request.RoomFeatureCreateDTO;
 import com.sprints.UniversityRoomBookingSystem.dto.response.RoomFeatureResponseDTO;
@@ -24,7 +26,7 @@ public class RoomFeatureService implements IRoomFeatureService {
     @Override
     public RoomFeatureResponseDTO createRoomFeature(RoomFeatureCreateDTO featureDto) {
         if(roomFeatureRepository.existsByFeatureNameIgnoreCase(featureDto.getFeatureName())){
-            throw new RuntimeException("Room Feature already exists");
+            throw new DuplicateException("Room Feature already exists");
         }
         RoomFeature roomFeature = new RoomFeature();
         roomFeature.setFeatureName(featureDto.getFeatureName());
@@ -50,7 +52,7 @@ public class RoomFeatureService implements IRoomFeatureService {
 
     @Override
     public RoomFeatureResponseDTO updateRoom(Long id, RoomFeatureCreateDTO featureDto) {
-        RoomFeature feature = roomFeatureRepository.findById(id).orElseThrow(() -> new RuntimeException("Room Feature not Found"));
+        RoomFeature feature = roomFeatureRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Room Feature not Found"));
         feature.setFeatureName(featureDto.getFeatureName());
         feature.setFeatureDescription(featureDto.getFeatureDescription());
         roomFeatureRepository.save(feature);
@@ -60,7 +62,7 @@ public class RoomFeatureService implements IRoomFeatureService {
 
     @Override
     public void deleteRoomFeature(Long id) {
-        RoomFeature feature = roomFeatureRepository.findById(id).orElseThrow(() -> new RuntimeException("Room Feature not Found"));
+        RoomFeature feature = roomFeatureRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Room Feature not Found"));
         roomFeatureRepository.delete(feature);
     }
 }

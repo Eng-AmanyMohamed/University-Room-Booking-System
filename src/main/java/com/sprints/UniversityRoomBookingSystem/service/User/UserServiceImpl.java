@@ -1,6 +1,8 @@
 package com.sprints.UniversityRoomBookingSystem.service.User;
 
 
+import com.sprints.UniversityRoomBookingSystem.Exception.DataNotFoundException;
+import com.sprints.UniversityRoomBookingSystem.Exception.DuplicateException;
 import com.sprints.UniversityRoomBookingSystem.Exception.EntityNotFoundException;
 import com.sprints.UniversityRoomBookingSystem.dto.request.AuthRequestDTO;
 import com.sprints.UniversityRoomBookingSystem.dto.request.UserRegisterDTO;
@@ -47,7 +49,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDTO registerUser(UserRegisterDTO dto) {
         if (userRepository.existsByEmail(dto.getEmail())) {
-            throw new RuntimeException("User with this email already exists");
+            throw new DuplicateException("User with this email already exists");
         }
 
         User user = new User();
@@ -58,7 +60,7 @@ public class UserServiceImpl implements UserService {
         if(role.isPresent()) {
             user.setRole(role.get());
         }else{
-            throw new EntityNotFoundException("Role not found");
+            throw new DataNotFoundException("Role not found");
         }
         User savedUser = userRepository.save(user);
 
@@ -99,7 +101,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(Long id) {
         if (!userRepository.existsById(id)) {
-            throw new EntityNotFoundException("User not found with id: " + id);
+            throw new DataNotFoundException("User not found with id: " + id);
         }
         userRepository.deleteById(id);
     }
@@ -118,14 +120,14 @@ public class UserServiceImpl implements UserService {
         if(department.isPresent()) {
             user.setDepartment(department.get());
         }else{
-            throw new EntityNotFoundException("Department not found");
+            throw new DataNotFoundException("Department not found");
         }
 
         Optional<Role> role = roleRepository.findById( userUpdateDTO.getRoleId());
         if(role.isPresent()) {
             user.setRole(role.get());
         }else{
-            throw new EntityNotFoundException("Role not found");
+            throw new DataNotFoundException("Role not found");
         }
         User savedUser = userRepository.save(user);
 

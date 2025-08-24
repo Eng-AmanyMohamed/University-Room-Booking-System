@@ -1,6 +1,9 @@
 package com.sprints.UniversityRoomBookingSystem.service.Booking;
 
+import com.sprints.UniversityRoomBookingSystem.Exception.DataNotFoundException;
 import com.sprints.UniversityRoomBookingSystem.Exception.EntityNotFoundException;
+import com.sprints.UniversityRoomBookingSystem.Exception.InvalidRequestException;
+import com.sprints.UniversityRoomBookingSystem.Exception.OverlappingException;
 import com.sprints.UniversityRoomBookingSystem.dto.request.BookingCreateDTO;
 import com.sprints.UniversityRoomBookingSystem.dto.response.BookingResponseDTO;
 import com.sprints.UniversityRoomBookingSystem.model.*;
@@ -41,11 +44,11 @@ public class BookingServiceImpl implements BookingService {
         // Fetch Room entity by ID
 
         Room room = roomRepository.findById(bookingCreateDTO.getRoom_id())
-                .orElseThrow(() -> new RuntimeException("Room not found with ID: " + bookingCreateDTO.getRoom_id()));
+                .orElseThrow(() -> new DataNotFoundException("Room not found with ID: " + bookingCreateDTO.getRoom_id()));
         booking.setRoom(room); // Set the fetched Room entity
         // Fetch User entity by ID
         User user = userRepository.findById(bookingCreateDTO.getUser_id())
-                .orElseThrow(() -> new RuntimeException("User  not found with ID: " + bookingCreateDTO.getUser_id()));
+                .orElseThrow(() -> new DataNotFoundException("User  not found with ID: " + bookingCreateDTO.getUser_id()));
         booking.setUser (user);
 
         // Save the booking
@@ -80,11 +83,11 @@ public class BookingServiceImpl implements BookingService {
     public BookingResponseDTO updateBooking(Long bookingId, BookingCreateDTO bookingUpdateDTO) {
         // Fetch the existing booking by ID
         Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new RuntimeException("Booking not found with ID: " + bookingId));
+                .orElseThrow(() -> new DataNotFoundException("Booking not found with ID: " + bookingId));
 
         // Check if the booking can be updated (e.g., it should not be CANCELLED)
         if (booking.getStatus() == BookingStatus.CANCELLED) {
-            throw new RuntimeException("Booking cannot be updated as it is already cancelled.");
+            throw new InvalidRequestException("Booking cannot be updated as it is already cancelled.");
         }
 
 
@@ -104,7 +107,7 @@ public class BookingServiceImpl implements BookingService {
         );
 
         if (!overlappingBookings.isEmpty()) {
-            throw new RuntimeException("Booking times overlap with an existing booking.");
+            throw new OverlappingException("Booking times overlap with an existing booking.");
         }
 
 
@@ -130,9 +133,9 @@ public class BookingServiceImpl implements BookingService {
     @Transactional
     public void cancelBooking(Long bookingId) {
         Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new EntityNotFoundException("Booking not found with ID: " + bookingId));
+                .orElseThrow(() -> new DataNotFoundException("Booking not found with ID: " + bookingId));
         if (booking.getStatus() != BookingStatus.PENDING && booking.getStatus() != BookingStatus.APPROVED) {
-            throw new EntityNotFoundException("Booking cannot be canceled as it is in status: " + booking.getStatus());
+            throw new InvalidRequestException("Booking cannot be canceled as it is in status: " + booking.getStatus());
         }
         BookingStatus oldStatus = booking.getStatus();
         booking.setStatus(BookingStatus.CANCELLED);

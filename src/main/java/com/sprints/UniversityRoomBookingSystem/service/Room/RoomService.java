@@ -1,5 +1,8 @@
 package com.sprints.UniversityRoomBookingSystem.service.Room;
 
+import com.sprints.UniversityRoomBookingSystem.Exception.DataNotFoundException;
+import com.sprints.UniversityRoomBookingSystem.Exception.DuplicateException;
+import com.sprints.UniversityRoomBookingSystem.Exception.InvalidRequestException;
 import com.sprints.UniversityRoomBookingSystem.dto.request.RoomCreateDTO;
 import com.sprints.UniversityRoomBookingSystem.dto.request.RoomFeatureCreateDTO;
 import com.sprints.UniversityRoomBookingSystem.dto.response.RoomFeatureResponseDTO;
@@ -31,21 +34,21 @@ public class RoomService implements IRoomService {
     @Override
     public RoomResponseDTO createRoom(RoomCreateDTO roomDto) {
         if (roomRepository.existsByNameIgnoreCase(roomDto.getName())) {
-            throw new RuntimeException("A Room with that name already exists");
+            throw new DuplicateException("A Room with that name already exists");
         }
 
 
-        Building building=buildingRepository.findById(roomDto.getBuildingId())
-                .orElseThrow(() -> new RuntimeException("Building Not Found"));
+        Building building = buildingRepository.findById(roomDto.getBuildingId())
+                .orElseThrow(() -> new DataNotFoundException("Building Not Found"));
 
         List<String> roomFeaturesNames = roomDto.getFeatureNames();
         List<RoomFeature> roomFeatures = new ArrayList<>();
         for (String roomFeatureName : roomFeaturesNames) {
-            if(roomFeatureRepository.existsByFeatureNameIgnoreCase(roomFeatureName)){
+            if (roomFeatureRepository.existsByFeatureNameIgnoreCase(roomFeatureName)) {
                 RoomFeature roomFeature = roomFeatureRepository.findByFeatureNameIgnoreCase(roomFeatureName);
                 roomFeatures.add(roomFeature);
-            }else{
-                throw new RuntimeException("Room Feature Not Found"); //Custom Exception
+            } else {
+                throw new DataNotFoundException("Room Feature Not Found"); //Custom Exception
             }
         }
 
@@ -63,7 +66,7 @@ public class RoomService implements IRoomService {
 
     @Override
     public RoomResponseDTO getRoom(Long id) {
-        Room room = roomRepository.findById(id).orElseThrow(() -> new RuntimeException("Room with id " + id + " not found"));
+        Room room = roomRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Room with id " + id + " not found"));
         RoomResponseDTO roomResponseDTO = roomMapper.toRoomResponseDTO(room);
 
         return roomResponseDTO;
@@ -83,21 +86,20 @@ public class RoomService implements IRoomService {
     @Override
     public RoomResponseDTO updateRoom(Long id, RoomCreateDTO roomDto) {
         Room room = roomRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Room with id " + id + " not found"));
+                .orElseThrow(() -> new DataNotFoundException("Room with id " + id + " not found"));
 
 
-
-        Building building=buildingRepository.findById(roomDto.getBuildingId())
-                .orElseThrow(() -> new RuntimeException("Building Not Found"));
+        Building building = buildingRepository.findById(roomDto.getBuildingId())
+                .orElseThrow(() -> new DataNotFoundException("Building Not Found"));
 
         List<String> roomFeaturesNames = roomDto.getFeatureNames();
         List<RoomFeature> roomFeatures = new ArrayList<>();
         for (String roomFeatureName : roomFeaturesNames) {
-            if(roomFeatureRepository.existsByFeatureNameIgnoreCase(roomFeatureName)){
+            if (roomFeatureRepository.existsByFeatureNameIgnoreCase(roomFeatureName)) {
                 RoomFeature roomFeature = roomFeatureRepository.findByFeatureNameIgnoreCase(roomFeatureName);
                 roomFeatures.add(roomFeature);
-            }else{
-                throw new RuntimeException("Room Feature Not Found"); //Custom Exception
+            } else {
+                throw new DataNotFoundException("Room Feature Not Found"); //Custom Exception
             }
         }
 
@@ -113,13 +115,14 @@ public class RoomService implements IRoomService {
 
     @Override
     public void deleteRoom(Long id) {
-        Room room = roomRepository.findById(id).orElseThrow(() -> new RuntimeException("Room not Found"));
+        Room room = roomRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Room not Found"));
         List<Booking> bookings = room.getBookingList();
         for (Booking booking : bookings) {
             if (booking.getStatus() == BookingStatus.APPROVED && booking.getEndTime().isAfter(LocalDateTime.now())) {
-                throw new RuntimeException("Booking has already been approved"); //replace with custom exception
+                throw new InvalidRequestException("Booking has already been approved"); //replace with custom exception
             }
-        } roomRepository.delete(room);
+        }
+        roomRepository.delete(room);
 
     }
 }
