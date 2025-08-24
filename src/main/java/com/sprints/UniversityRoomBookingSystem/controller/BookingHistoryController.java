@@ -4,6 +4,7 @@ import com.sprints.UniversityRoomBookingSystem.dto.response.BookingHistoryRespon
 import com.sprints.UniversityRoomBookingSystem.service.BookhingHistory.BookingHistoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,7 @@ public class BookingHistoryController {
     private final BookingHistoryService bookingHistoryService;
 
     @GetMapping
+    @PreAuthorize("hasRole('Admin')")
     public ResponseEntity<List<BookingHistoryResponseDTO>>getBookingHistory(@PathVariable Long bookingId){
         List<BookingHistoryResponseDTO>historyList=bookingHistoryService.getHistoryForBooking(bookingId);
         return ResponseEntity.ok(historyList);
