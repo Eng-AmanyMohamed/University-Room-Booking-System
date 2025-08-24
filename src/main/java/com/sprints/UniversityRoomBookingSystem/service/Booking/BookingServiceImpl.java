@@ -12,8 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Service
 public class BookingServiceImpl implements BookingService {
@@ -152,6 +152,34 @@ public class BookingServiceImpl implements BookingService {
         bookingHistoryRepository.save(history);
 
 
+    }
+    public List<Map<String, LocalDateTime>> findAvailableTimeSlots(Long roomId, LocalDateTime startTime, LocalDateTime endTime) {
+        List<Booking> overlappingBookings = bookingRepository.findBookingsForAvailabilityCheck(roomId, startTime, endTime);
+
+        List<Map<String, LocalDateTime>> availableSlots = new ArrayList<>();
+        LocalDateTime currentTime = startTime;
+
+        for (Booking booking : overlappingBookings) {
+            if (currentTime.isBefore(booking.getStartTime())) {
+                Map<String, LocalDateTime> slot = new HashMap<>();
+                slot.put("start", currentTime);
+                slot.put("end", booking.getStartTime());
+                availableSlots.add(slot);
+            }
+
+            if (booking.getEndTime().isAfter(currentTime)) {
+                currentTime = booking.getEndTime();
+            }
+        }
+
+        if (currentTime.isBefore(endTime)) {
+            Map<String, LocalDateTime> slot = new HashMap<>();
+            slot.put("start", currentTime);
+            slot.put("end", endTime);
+            availableSlots.add(slot);
+        }
+
+        return availableSlots;
     }
 
 }
