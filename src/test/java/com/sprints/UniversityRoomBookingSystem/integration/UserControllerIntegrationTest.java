@@ -2,6 +2,7 @@ package com.sprints.UniversityRoomBookingSystem.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sprints.UniversityRoomBookingSystem.dto.request.UserRegisterDTO;
+import com.sprints.UniversityRoomBookingSystem.dto.request.UserUpdateDTO;
 import com.sprints.UniversityRoomBookingSystem.dto.response.UserResponseDTO;
 import com.sprints.UniversityRoomBookingSystem.model.Department;
 import com.sprints.UniversityRoomBookingSystem.model.Role;
@@ -126,7 +127,7 @@ public class UserControllerIntegrationTest {
     @Test
     @WithMockUser(roles = {"Admin"})
     void testUpdateUser() throws Exception {
-        UserRegisterDTO updateDTO = new UserRegisterDTO();
+        UserUpdateDTO updateDTO = new UserUpdateDTO();
         updateDTO.setUsername("UpdatedJohn");
         updateDTO.setEmail("updated@example.com");
         updateDTO.setPassword("newpass123");
@@ -141,7 +142,7 @@ public class UserControllerIntegrationTest {
                 department.getName()
         );
 
-        when(userService.updateUser(eq(user.getUserId()), any(UserRegisterDTO.class)))
+        when(userService.updateUser(eq(user.getUserId()), any(UserUpdateDTO.class)))
                 .thenReturn(updatedResponse);
 
         mockMvc.perform(put("/api/User/{id}", user.getUserId())

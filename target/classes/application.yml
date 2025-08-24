@@ -3,3 +3,16 @@ spring:
     name: UniversityRoomBookingSystem
   profiles:
     active: dev
+
+logging:
+
+  level:
+    root: INFO
+    com.sprints.UniversityRoomBookingSystem: DEBUG
+  file:
+      name: logs/app.log
+  logback:
+      rollingpolicy:
+        max-file-size: 10MB
+        max-history: 30
+        total-size-cap: 1GB

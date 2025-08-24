@@ -2,6 +2,7 @@ package com.sprints.UniversityRoomBookingSystem.service.User;
 
 import com.sprints.UniversityRoomBookingSystem.Exception.EntityNotFoundException;
 import com.sprints.UniversityRoomBookingSystem.dto.request.UserRegisterDTO;
+import com.sprints.UniversityRoomBookingSystem.dto.request.UserUpdateDTO;
 import com.sprints.UniversityRoomBookingSystem.dto.response.UserResponseDTO;
 import com.sprints.UniversityRoomBookingSystem.model.Department;
 import com.sprints.UniversityRoomBookingSystem.model.Role;
@@ -55,8 +56,8 @@ class UserServiceImplTest {
 
         user = new User();
         user.setUserId(1L);
-        user.setUsername("John Doe");
-        user.setEmail("john@example.com");
+        user.setUsername("mohamed mostafa");
+        user.setEmail("mohamed@gmail.com");
         user.setPassword("pass");
         user.setDepartment(department);
         user.setRole(role);
@@ -69,7 +70,7 @@ class UserServiceImplTest {
 //        Optional<User> result = userService.getUserById(1L);
 //
 //        assertTrue(result.isPresent());
-//        assertEquals("John Doe", result.get().getUsername());
+//        assertEquals("mohamed mostafa", result.get().getUsername());
 //    }
 
     @Test
@@ -83,19 +84,19 @@ class UserServiceImplTest {
 
     @Test
     void getUserByEmail_ShouldReturnUser_WhenFound() {
-        when(userRepository.findByEmail("john@example.com")).thenReturn(Optional.of(user));
+        when(userRepository.findByEmail("mohamed@gmail.com")).thenReturn(Optional.of(user));
 
-        Optional<User> result = userService.getUserByEmail("john@example.com");
+        Optional<User> result = userService.getUserByEmail("mohamed@gmail.com");
 
         assertTrue(result.isPresent());
-        assertEquals("john@example.com", result.get().getEmail());
+        assertEquals("mohamed@gmail.com", result.get().getEmail());
     }
 
     @Test
     void getUserByEmail_ShouldReturnEmpty_WhenNotFound() {
-        when(userRepository.findByEmail("john@example.com")).thenReturn(Optional.empty());
+        when(userRepository.findByEmail("mohamed@gmail.com")).thenReturn(Optional.empty());
 
-        Optional<User> result = userService.getUserByEmail("john@example.com");
+        Optional<User> result = userService.getUserByEmail("mohamed@gmail.com");
 
         assertTrue(result.isEmpty());
     }
@@ -107,7 +108,7 @@ class UserServiceImplTest {
 //        List<UserResponseDTO> result = userService.getAllUsers();
 //
 //        assertEquals(1, result.size());
-//        assertEquals("John Doe", result.get(0).getUsername());
+//        assertEquals("mohamed mostafa", result.get(0).getUsername());
 //        assertEquals("Admin", result.get(0).getRoleName());
 //        assertEquals("Computer Science", result.get(0).getDepartmentName());
 //    }
@@ -148,7 +149,7 @@ class UserServiceImplTest {
 
     @Test
     void updateUser_ShouldThrow_WhenDepartmentNotFound() {
-        UserRegisterDTO dto = new UserRegisterDTO(
+        UserUpdateDTO dto = new UserUpdateDTO(
                 "Updated", "updated@example.com", "pass", 99L, 1L
         );
 
@@ -161,7 +162,7 @@ class UserServiceImplTest {
 
     @Test
     void updateUser_ShouldThrow_WhenRoleNotFound() {
-        UserRegisterDTO dto = new UserRegisterDTO(
+        UserUpdateDTO dto = new UserUpdateDTO(
                 "Updated", "updated@example.com", "pass", 1L, 99L
         );
 

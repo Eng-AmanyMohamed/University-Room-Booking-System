@@ -1,13 +1,21 @@
 package com.sprints.UniversityRoomBookingSystem.controller;
 
+import com.sprints.UniversityRoomBookingSystem.dto.request.AuthRequestDTO;
+import com.sprints.UniversityRoomBookingSystem.dto.request.UserRegisterDTO;
+import com.sprints.UniversityRoomBookingSystem.dto.response.AuthResponseDTO;
+import com.sprints.UniversityRoomBookingSystem.dto.response.UserResponseDTO;
 import com.sprints.UniversityRoomBookingSystem.model.User;
 import com.sprints.UniversityRoomBookingSystem.model.Role;
 import com.sprints.UniversityRoomBookingSystem.repository.UserRepository;
 import com.sprints.UniversityRoomBookingSystem.repository.RoleRepository;
 import com.sprints.UniversityRoomBookingSystem.repository.DepartmentRepository;
-import com.sprints.UniversityRoomBookingSystem.security.JwtService;
+import com.sprints.UniversityRoomBookingSystem.service.User.UserService;
+import com.sprints.UniversityRoomBookingSystem.service.User.UserServiceImpl;
+import com.sprints.UniversityRoomBookingSystem.util.JwtService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,39 +31,16 @@ public class AuthController {
     private final DepartmentRepository departmentRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody User request) {
-        request.setPassword(passwordEncoder.encode(request.getPassword()));
-
-        if (request.getRole() == null) {
-            Optional<Role> defaultRole = roleRepository.findByName("USER");
-            defaultRole.ifPresent(request::setRole);
-        }
-
-        User savedUser = userRepository.save(request);
-        String token = jwtService.generateToken(savedUser);
-
-        return ResponseEntity.ok("Registered successfully. Token: " + token);
+    public ResponseEntity<UserResponseDTO> register(@RequestBody UserRegisterDTO request) {
+        UserResponseDTO createdUser = userService.registerUser(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestParam String email,
-                                   @RequestParam String password) {
-        Optional<User> userOpt = userRepository.findByEmail(email);
-
-        if (userOpt.isEmpty()) {
-            return ResponseEntity.status(401).body("Invalid email or password");
-        }
-
-        User user = userOpt.get();
-
-        if (!passwordEncoder.matches(password, user.getPassword())) {
-            return ResponseEntity.status(401).body("Invalid email or password");
-        }
-
-        String token = jwtService.generateToken(user);
-
-        return ResponseEntity.ok("Login successful. Token: " + token);
+    public ResponseEntity<AuthResponseDTO> login(@RequestBody AuthRequestDTO request) {
+        return ResponseEntity.ok(userService.login(request));
     }
 }
