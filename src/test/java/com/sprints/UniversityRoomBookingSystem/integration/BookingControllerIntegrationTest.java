@@ -123,7 +123,6 @@ public class BookingControllerIntegrationTest {
                 .andExpect(jsonPath("$.user_id").value(user.getUserId()));
     }
 
-    // ---------- GET ALL ----------
     @Test
     @WithMockUser(roles = {"USER"})
     void testGetAllBookings() throws Exception {
@@ -135,7 +134,6 @@ public class BookingControllerIntegrationTest {
                 .andExpect(jsonPath("$[0].status").value("PENDING"));
     }
 
-    // ---------- GET BY ID ----------
     @Test
     @WithMockUser(roles = {"USER"})
     void testGetBookingById() throws Exception {
@@ -147,7 +145,6 @@ public class BookingControllerIntegrationTest {
                 .andExpect(jsonPath("$.status").value("PENDING"));
     }
 
-    // ---------- UPDATE ----------
     @Test
     @WithMockUser(roles = {"USER"})
     void testUpdateBooking() throws Exception {
@@ -181,7 +178,6 @@ public class BookingControllerIntegrationTest {
                 .andExpect(jsonPath("$.room_id").value(room.getRoomId()));
     }
 
-    // ---------- CANCEL ----------
     @Test
     @WithMockUser(roles = {"USER"})
     void testCancelBooking() throws Exception {

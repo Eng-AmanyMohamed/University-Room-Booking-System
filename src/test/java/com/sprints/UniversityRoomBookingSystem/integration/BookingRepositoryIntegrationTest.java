@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
@@ -40,20 +40,17 @@ public class BookingRepositoryIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        // Create Room
         room = new Room();
         room.setName("Room A");
         room.setCapacity(20);
         roomRepository.save(room);
 
-        // Create User
         user = new User();
         user.setUsername("Alice");
         user.setEmail("alice@example.com");
         user.setPassword("alice123");
         userRepository.save(user);
 
-        // Create Booking
         booking = new Booking();
         booking.setPurpose("Lecture");
         booking.setStartTime(LocalDateTime.of(2025, 9, 10, 10, 0));
@@ -64,7 +61,6 @@ public class BookingRepositoryIntegrationTest {
         bookingRepository.save(booking);
     }
 
-    // ---------- Finder method test ----------
     @Test
     void testFindByUserId() {
         List<Booking> bookings = bookingRepository.findByUser_UserId(user.getUserId());
@@ -72,7 +68,6 @@ public class BookingRepositoryIntegrationTest {
         assertThat(bookings.get(0).getPurpose()).isEqualTo("Lecture");
     }
 
-    // ---------- Custom query test ----------
     @Test
     void testFindOverlappingBookings() {
         LocalDateTime overlapStart = LocalDateTime.of(2025, 9, 11, 9, 0);
@@ -86,12 +81,4 @@ public class BookingRepositoryIntegrationTest {
         assertThat(overlapping.get(0).getBookingId()).isEqualTo(booking.getBookingId());
     }
 
-//    // ---------- Optional fetch test ----------
-//    @Test
-//    void testFindBookingWithDetails() {
-//        Optional<Booking> fetched = bookingRepository.findBookingWithDetails(booking.getBookingId());
-//        assertThat(fetched).isPresent();
-//        assertThat(fetched.get().getUser().getUsername()).isEqualTo("Alice");
-//        assertThat(fetched.get().getRoom().getName()).isEqualTo("Room A");
-//    }
 }
