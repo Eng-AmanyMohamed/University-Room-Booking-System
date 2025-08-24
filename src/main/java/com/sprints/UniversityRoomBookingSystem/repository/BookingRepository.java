@@ -22,7 +22,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findByStatus(BookingStatus status);
 
     @Query("SELECT b FROM Booking b WHERE b.room.roomId = :roomId " +
-            "AND b.status IN ('PENDING', 'APPROVED') " +
+            "AND b.status IN (:PENDING, :APPROVED) " +
             "AND ((b.startTime < :endTime) AND (b.endTime > :startTime))")
     List<Booking> findOverlappingBookings(@Param("roomId") Long roomId,
                                           @Param("startTime") LocalDateTime startTime,
@@ -30,24 +30,21 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     @Query("SELECT b FROM Booking b WHERE b.room.roomId = :roomId " +
             "AND b.bookingId != :bookingId " +
-            "AND b.status IN ('PENDING', 'APPROVED') " +
-            "AND ((b.startTime < :endTime) AND (b.endTime > :startTime))")
+            "AND b.status IN (:PENDING, :APPROVED) " +            "AND ((b.startTime < :endTime) AND (b.endTime > :startTime))")
     List<Booking> findOverlappingBookingsExcluding(@Param("roomId") Long roomId,
                                                    @Param("startTime") LocalDateTime startTime,
                                                    @Param("endTime") LocalDateTime endTime,
                                                    @Param("bookingId") Long bookingId);
 
     @Query("SELECT b FROM Booking b WHERE b.room.roomId = :roomId " +
-            "AND b.status IN ('PENDING', 'APPROVED') " +
-            "AND b.startTime >= :startDate AND b.endTime <= :endDate " +
+            "AND b.status IN (:PENDING, :APPROVED) " +            "AND b.startTime >= :startDate AND b.endTime <= :endDate " +
             "ORDER BY b.startTime")
     List<Booking> findBookingsInDateRange(@Param("roomId") Long roomId,
                                           @Param("startDate") LocalDateTime startDate,
                                           @Param("endDate") LocalDateTime endDate);
 
     @Query("SELECT b FROM Booking b WHERE b.user.userId = :userId " +
-            "AND b.status IN ('PENDING', 'APPROVED') " +
-            "AND b.startTime > :currentTime")
+            "AND b.status IN (:PENDING, :APPROVED) " +            "AND b.startTime > :currentTime")
     List<Booking> findCancellableBookingsByUser(@Param("userId") Long userId,
                                                 @Param("currentTime") LocalDateTime currentTime);
 
@@ -59,8 +56,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     @Modifying
     @Query("UPDATE Booking b SET b.status = 'CANCELLED' WHERE b.bookingId = :bookingId " +
-            "AND b.status IN ('PENDING', 'APPROVED') " +
-            "AND b.startTime > :currentTime")
+            "AND b.status IN (:PENDING, :APPROVED) " +            "AND b.startTime > :currentTime")
     int cancelBooking(@Param("bookingId") Long bookingId,
                       @Param("currentTime") LocalDateTime currentTime);
 
@@ -83,4 +79,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "LEFT JOIN FETCH b.room " +
             "WHERE b.bookingId = :bookingId")
     Optional<Booking> findBookingWithDetails(@Param("bookingId") Long bookingId);
+
+
 }
