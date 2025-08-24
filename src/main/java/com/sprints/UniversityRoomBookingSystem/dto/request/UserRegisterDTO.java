@@ -21,9 +21,9 @@ public class UserRegisterDTO {
     @NotBlank
     private String password;
 
-    @NotNull
-    private Long departmentId;
-
+//    @NotNull
+//    private Long departmentId;
+//
     @NotNull
     private Long roleId;  // student / faculty_member / admin
 }

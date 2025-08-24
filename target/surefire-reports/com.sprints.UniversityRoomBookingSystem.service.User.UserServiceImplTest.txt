@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.sprints.UniversityRoomBookingSystem.service.User.UserServiceImplTest
+-------------------------------------------------------------------------------
+Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.170 s -- in com.sprints.UniversityRoomBookingSystem.service.User.UserServiceImplTest

@@ -1,6 +1,7 @@
 package com.sprints.UniversityRoomBookingSystem.controller;
 
 import com.sprints.UniversityRoomBookingSystem.dto.request.UserRegisterDTO;
+import com.sprints.UniversityRoomBookingSystem.dto.request.UserUpdateDTO;
 import com.sprints.UniversityRoomBookingSystem.dto.response.UserResponseDTO;
 import com.sprints.UniversityRoomBookingSystem.model.User;
 import com.sprints.UniversityRoomBookingSystem.service.User.UserService;
@@ -20,13 +21,13 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    @PreAuthorize("hasRole('Admin')")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('Admin')")
+    @PreAuthorize("hasAuthority('Admin')")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
         return userService.getUserById(id)
                 .map(ResponseEntity::ok)
@@ -34,19 +35,18 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('Admin')")
+    @PreAuthorize("hasAuthority('Admin')")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('Admin')")
     public ResponseEntity<UserResponseDTO> updateUser(
             @PathVariable Long id,
-            @Valid @RequestBody UserRegisterDTO userRegisterDTO) {
+            @Valid @RequestBody UserUpdateDTO userUpdateDTO) {
 
-        UserResponseDTO updatedUser = userService.updateUser(id, userRegisterDTO);
+        UserResponseDTO updatedUser = userService.updateUser(id, userUpdateDTO);
         return ResponseEntity.ok(updatedUser);
     }
 }
