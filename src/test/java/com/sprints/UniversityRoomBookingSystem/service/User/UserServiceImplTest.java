@@ -63,15 +63,15 @@ class UserServiceImplTest {
         user.setRole(role);
     }
 
-//    @Test
-//    void getUserById_ShouldReturnUser_WhenFound() {
-//        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-//
-//        Optional<User> result = userService.getUserById(1L);
-//
-//        assertTrue(result.isPresent());
-//        assertEquals("mohamed mostafa", result.get().getUsername());
-//    }
+    @Test
+    void getUserById_ShouldReturnUser_WhenFound() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+
+        Optional<User> result = userService.getUserById(1L);
+
+        assertTrue(result.isPresent());
+        assertEquals("mohamed mostafa", result.get().getUsername());
+    }
 
     @Test
     void getUserById_ShouldReturnEmpty_WhenNotFound() {
@@ -101,17 +101,17 @@ class UserServiceImplTest {
         assertTrue(result.isEmpty());
     }
 
-//    @Test
-//    void getAllUsers_ShouldReturnList() {
-//        when(userRepository.findAll()).thenReturn(Arrays.asList(user));
-//
-//        List<UserResponseDTO> result = userService.getAllUsers();
-//
-//        assertEquals(1, result.size());
-//        assertEquals("mohamed mostafa", result.get(0).getUsername());
-//        assertEquals("Admin", result.get(0).getRoleName());
-//        assertEquals("Computer Science", result.get(0).getDepartmentName());
-//    }
+    @Test
+    void getAllUsers_ShouldReturnList() {
+        when(userRepository.findAll()).thenReturn(Arrays.asList(user));
+
+        List<UserResponseDTO> result = userService.getAllUsers();
+
+        assertEquals(1, result.size());
+        assertEquals("mohamed mostafa", result.get(0).getUsername());
+        assertEquals("Admin", result.get(0).getRoleName());
+        assertEquals("Computer Science", result.get(0).getDepartmentName());
+    }
 
     @Test
     void deleteUser_ShouldDelete_WhenExists() {
@@ -129,23 +129,23 @@ class UserServiceImplTest {
         assertThrows(EntityNotFoundException.class, () -> userService.deleteUser(1L));
     }
 
-//    @Test
-//    void updateUser_ShouldUpdateAndReturnDTO_WhenValid() {
-//        UserRegisterDTO dto = new UserRegisterDTO(
-//                "Updated Name", "updated@example.com", "newpass", 1L, 1L
-//        );
-//
-//        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-//        when(passwordEncoder.encode("newpass")).thenReturn("encodedPass");
-//        when(departmentRepository.findById(1L)).thenReturn(Optional.of(department));
-//        when(roleRepository.findById(1L)).thenReturn(Optional.of(role));
-//        when(userRepository.save(any(User.class))).thenReturn(user);
-//
-//        UserResponseDTO result = userService.updateUser(1L, dto);
-//
-//        assertEquals("Updated Name", result.getUsername());
-//        assertEquals("updated@example.com", result.getEmail());
-//    }
+    @Test
+    void updateUser_ShouldUpdateAndReturnDTO_WhenValid() {
+        UserUpdateDTO dto = new UserUpdateDTO(
+                "Updated Name", "updated@example.com", "newpass", 1L, 1L
+        );
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(passwordEncoder.encode("newpass")).thenReturn("encodedPass");
+        when(departmentRepository.findById(1L)).thenReturn(Optional.of(department));
+        when(roleRepository.findById(1L)).thenReturn(Optional.of(role));
+        when(userRepository.save(any(User.class))).thenReturn(user);
+
+        UserResponseDTO result = userService.updateUser(1L, dto);
+
+        assertEquals("Updated Name", result.getUsername());
+        assertEquals("updated@example.com", result.getEmail());
+    }
 
     @Test
     void updateUser_ShouldThrow_WhenDepartmentNotFound() {
