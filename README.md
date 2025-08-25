@@ -37,11 +37,11 @@ src/
 │   │       ├── controller/           # REST Controllers (Auth, Room, Booking, Admin)
 │   │       ├── dto/                  # Request/Response DTOs
 │   │       ├── exception/            # Custom exceptions & handler
-│   │       ├── filter/               # JWT Authentication Filter
+│   │       ├── util/                 # JWT Authentication Filter
 │   │       ├── model/                # JPA Entities (User, Room, Booking, etc.)
 │   │       ├── repository/           # JPA Repositories
 │   │       ├── service/              # Service Interfaces & Implementations
-│   │       ├── validator/            # Custom validators (@NoOverlap)
+│   │       ├── validation/            # Custom validators (@NoOverlap)
 │   │       ├── modelmapper/          # map from entity to Dto and from entity to response Dto
 │   │       └── RoomBookingApplication.java
 │   └── resources/
@@ -51,10 +51,8 @@ src/
 └── test/
     ├── java/
     │   └── com/sprints/UniversityRoomBookingSystem
-    │       ├── controller/           # MockMvc tests
+    │       ├── integration/          # JPA integration tests
     │       ├── service/              # Service unit tests
-    │       ├── repository/           # JPA integration tests
-    │       └── util/                 # Test utilities
     └── resources/
         └── application-test.yml      # H2 + test config
 ```
